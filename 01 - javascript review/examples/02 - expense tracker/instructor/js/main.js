@@ -33,3 +33,48 @@ function renderExpenses(expenses) {
 }
 
 renderExpenses(theExpenses);
+
+// 3. handle behaviour for form submission
+document.getElementById("expense-form-add").addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault() // prevent default HTML form submission behaviour
+
+        // generate objects with values from DOM input fields
+        const title = document.getElementById("title").value;
+        const category = document.getElementById("category").value;
+        const date = document.getElementById("date").value;
+        const amount = document.getElementById("amount").value;
+
+        // add a new expense to the data container if our submit button was clicked
+        if (document.getElementById("submiter").innerText === "Add Expense") {
+            const newExpense = {
+                id: theExpenses.length + 1, // basic way to auto-increment IDs
+                title,
+                category,
+                date,
+                amount,
+            };
+
+            theExpenses.push(newExpense) // add our new expense to the data array
+            renderExpenses(theExpenses)  // re-render expenses
+            this.reset();
+        } else {
+            const expenseId = parseInt(document.getElementById("expense-id").value) // get hidden ID input from input fields
+            const expenseToEdit = theExpenses.find(
+                (expense) => expense.id === expenseId
+            ); // match an actual data element in expense container by id
+
+            if (expenseToEdit) {  // first, make sure we actually got an object!
+                expenseToEdit.title = title;
+                expenseToEdit.category = category;
+                expenseToEdit.date = date;
+                expenseToEdit.amount = amount;
+                this.reset();
+                document.getElementById("submiter").innerText = "Add Expense";
+                renderExpenses(theExpenses);
+            }
+        }
+    }
+)
