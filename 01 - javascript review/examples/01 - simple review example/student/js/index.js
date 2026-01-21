@@ -1,5 +1,6 @@
-/*
-Enter JS here
+// 1. select form & topic list
+let topicForm = document.querySelector(".new-topic-form")
+let topicList = document.querySelector(".topics-list")
 
 HTML for list topic list item
 <li class="list-group-item">
