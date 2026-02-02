@@ -53,6 +53,7 @@ document.getElementById("expense-form-add").addEventListener("submit", (e) => {
 expenseContainer.addEventListener("expense-delete", (e) => {
     const id = Number(e.detail.id);
     console.log("Delete event received for ID:", id);
+    expenses.removeExpense(id);
 });
 
 // Step 4: add listener to our custom edit event
