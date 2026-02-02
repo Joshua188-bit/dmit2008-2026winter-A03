@@ -21,8 +21,6 @@ class ResourceResults extends HTMLElement {
   #results = [];
   #filteredResults = [];
   #filters = {
-    // We could've added default values earlier, since we knew the data shape,
-    // but I chose to wait until I wrote the event & its payload in case any surprises came up.
     searchQuery: '',
     category: 'all',
     openNow: false,
@@ -36,27 +34,18 @@ class ResourceResults extends HTMLElement {
   }
 
   set results(data) {
-    this.#results = data;  // This is now just a data container for *all* results. We don't mutate it anymore.
-
-    // SUPER IMPORTANT: We're rendering from filtered results now, and our initial state is unfiltered.
-    // Spreading out '[...data]'' just to wrap it back in a list (instead of just passing 'data' again) *looks* stupid, BUT
-    //  doing this creates a shallow copy. If we just passed data, both array variables would point to the same reference,
-    //  so modifying #filteredResults would also affect #results!
+    this.#results = data;
     this.#filteredResults = [...data];
     this.render();
   }
 
   set filters(incomingFilters) {
     this.#filters = incomingFilters;
-    // Setting the filters is easy now that I know that in this example's case, we'll receive complete data every time.
-    
-    // After I set/store the incoming filter inputs, I know I need to apply them.
     this.#applyFilters()
   }
 
   #applyFilters() {
-    // Now that I'm sure of the data shape, I can prepare work on this.
-    const { searchQuery, category, openNow, virtual } = this.#filters;  // if this is new to you, look up "destructuring"!
+    const { searchQuery, category, openNow, virtual } = this.#filters;
 
     // We'll complete the logic that actually filters from the results array in the next commit, but I can plan this out now.
     //   1. If I have any user-written string inputs in the filters, I'll want to clean those up first. (I do! It's searchQuery).
@@ -73,7 +62,7 @@ class ResourceResults extends HTMLElement {
       }
     );
     
-    this.render(); // I already know I'll need to re-render, because I'm changing the data displayed by the UI
+    this.render();
   }
 
   _handleResultClick(event) {
@@ -83,7 +72,7 @@ class ResourceResults extends HTMLElement {
       button.classList.add('active');
 
       const resultID = button.getAttribute('data-id');
-      const result = this.#results.find(r => r.id === resultID);  // note that we're finding the data object from the array, not the UI row!
+      const result = this.#results.find(r => r.id === resultID);
 
       const resultSelectedEvent = new CustomEvent(
         'resource-selected',
@@ -111,7 +100,6 @@ class ResourceResults extends HTMLElement {
     const content = template.content.cloneNode(true)
     const listGroup = content.querySelector('.list-group');
 
-    // Now that we're set up to render from #filteredResults instead, let's reflect that here:
     if (this.#filteredResults.length) {
       const resultsHTML = this.#filteredResults.map(
         result => `
@@ -125,7 +113,7 @@ class ResourceResults extends HTMLElement {
         </button>`
       ); 
 
-      listGroup.innerHTML = resultsHTML.join(''); // resultsHTML is an array, so combine each HTML blob back-to-back into a string
+      listGroup.innerHTML = resultsHTML.join('');
 
     } else {
       listGroup.innerHTML = `
